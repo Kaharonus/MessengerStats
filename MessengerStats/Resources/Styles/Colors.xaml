@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:MessengerStats">
+    <SolidColorBrush x:Key="Background" Color="#FF333333" />
+    <SolidColorBrush x:Key="BackgroundDark" Color="#F222" />
+    <SolidColorBrush x:Key="BackgroundLight" Color="#F444" />
+
+    <SolidColorBrush x:Key="TextColor" Color="#D5D5D5" />
+    <SolidColorBrush x:Key="AccentColor" Color="#3b5998" />
+</ResourceDictionary>

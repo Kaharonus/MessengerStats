@@ -1,0 +1,14 @@
+﻿<Application x:Class="MessengerStats.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:MessengerStats"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary p4:Name="Dictionaries" xmlns:p4="http://schemas.microsoft.com/winfx/2006/xaml">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/MessengerStats;component/Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="/MessengerStats;component/Resources/Styles/ScrollBar.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
