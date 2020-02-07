@@ -5,12 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MessengerStats"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid Background="{StaticResource Background}">
-        <ScrollViewer Style="{StaticResource StylizedScrollBar}"  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
-            <StackPanel Height="500">
-                <Grid Height="100" Background="{StaticResource BackgroundDark}" />
-            </StackPanel>
-        </ScrollViewer>
+        Title="Messenger stats" Height="639" Width="1140" MinHeight="360" MinWidth="600">
+    <Grid Background="{StaticResource Background}" Loaded="Grid_Loaded">
+        <Frame x:Name="MainContent" NavigationUIVisibility="Hidden" Background="Transparent" Panel.ZIndex="1" />
+        
     </Grid>
 </Window>
