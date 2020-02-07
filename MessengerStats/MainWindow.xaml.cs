@@ -28,7 +28,8 @@ namespace MessengerStats {
         private async void Grid_Loaded(object sender, RoutedEventArgs e) {
             //Inital setup
             Navigation.Init(this);
-            await Navigation.Navigate(new Intro());
+            MainContent.Navigate(new Intro());
+            //await Navigation.Navigate(new Intro());
         }
     }
 }

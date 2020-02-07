@@ -27,8 +27,8 @@ namespace MessengerStats.Views {
             Path = path;
         }
 
-        private void Grid_Loaded(object sender, RoutedEventArgs e) {
-            ConversationData.Load(Path);
+        private async void Grid_Loaded(object sender, RoutedEventArgs e) {
+            await ConversationData.Load(Path);
             foreach (var item in ConversationData.Conversations) {
                 ConversationItem i = new ConversationItem(item.Name);
                 ConversationStackPanel.Children.Add(i);

@@ -8,6 +8,6 @@
         Title="Messenger stats" Height="639" Width="1140" MinHeight="360" MinWidth="600">
     <Grid Background="{StaticResource Background}" Loaded="Grid_Loaded">
         <Frame x:Name="MainContent" NavigationUIVisibility="Hidden" Background="Transparent" Panel.ZIndex="1" />
-        
+        <Image x:Name="MainContentOld" Panel.ZIndex="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
     </Grid>
 </Window>

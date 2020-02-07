@@ -3,30 +3,32 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace MessengerStats {
     public class ConversationData {
 
         public static List<Conversation> Conversations { get; set; } = new List<Conversation>();
 
-        static Conversation ParseConversation(string dir) {
+        static async Task<Conversation> ParseConversation(string dir) {
             var files = Directory.GetFiles(dir, "message_*.json");
             Conversation conv = new Conversation();
             foreach (var file in files) {
-                string text = File.ReadAllText(file, Encoding.GetEncoding("ISO-8859-1"));
-                var parsed = JsonSerializer.Deserialize<RawConversation>(text);
+                var str = File.OpenRead(file);
+                //string text = File.ReadAllText(file, Encoding.GetEncoding("ISO-8859-1"));
+                var parsed = await JsonSerializer.DeserializeAsync<RawConversation>(str);
+                str.Close();
                 conv.Name = parsed.title.DecodeString();
                 //ParseMessages(ref conv, parsed.messages);
             }
             return conv;
         }
 
-        public static void Load(string path) {
+        public static async Task Load(string path) {
             var dirs = Directory.GetDirectories(path);
             foreach (var dir in dirs) {
-                 Conversations.Add(ParseConversation(dir));
+                 Conversations.Add(await ParseConversation(dir));
             }
-
         }
 
         public class RawConversation {
