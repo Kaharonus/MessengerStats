@@ -15,7 +15,10 @@ namespace MessengerStats {
         private static MainWindow Window { get; set; }
         private static Dictionary<string, Storyboard> Animations { get; set; } = new Dictionary<string, Storyboard>();
 
-
+        /// <summary>
+        /// Gets the entire class ready for operation
+        /// </summary>
+        /// <param name="window"></param>
         public static void Init(MainWindow window) {
             Window = window;
             Animations.Add("FadeIn", (Storyboard)Application.Current.FindResource("FadeIn"));

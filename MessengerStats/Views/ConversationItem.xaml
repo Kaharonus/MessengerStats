@@ -6,10 +6,20 @@
              xmlns:local="clr-namespace:MessengerStats.Views"
              mc:Ignorable="d" 
              Height="40" d:DesignWidth="300">
-    <Border Margin="5,5,5,0" CornerRadius="3" Background="{StaticResource BackgroundLight}">
+    <Border Margin="5,5,5,0" CornerRadius="3" Cursor="Hand">
+        <Border.Style>
+            <Style>
+                <Setter Property="Border.Background" Value="{StaticResource BackgroundLight}"/>
+                <Style.Triggers>
+                    <Trigger Property="Border.IsMouseOver" Value="True">
+                        <Setter Property="Border.Background" Value="{StaticResource AccentColor}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
         <Border.Effect>
             <DropShadowEffect Opacity="0.3" Direction="300" />
         </Border.Effect>
-        <TextBlock x:Name="ConvName" Text="Sample Text" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" />
+        <TextBlock x:Name="ConvName" Text="Overall stats" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" />
     </Border>
 </UserControl>

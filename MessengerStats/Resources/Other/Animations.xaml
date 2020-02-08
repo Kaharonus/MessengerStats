@@ -2,10 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:MessengerStats.Resources.Other">
     <Storyboard  x:Key="FadeIn">
-        <DoubleAnimation To="1" Duration="0:0:0.2" From="0" Storyboard.TargetProperty="Opacity" DecelerationRatio="0.75" />
+        <DoubleAnimation To="1" Duration="0:0:0.3" From="0" Storyboard.TargetProperty="Opacity" DecelerationRatio="0.75" />
     </Storyboard>
     <Storyboard x:Key="FadeOut">
-        <DoubleAnimation To="0" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity" DecelerationRatio="0.75" />
+        <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetProperty="Opacity" DecelerationRatio="0.75" />
     </Storyboard>
     <Storyboard x:Key="ResetMargin">
         <ThicknessAnimation To="0" Duration="0:0:0.2" Storyboard.TargetProperty="Margin" DecelerationRatio="0.75" />

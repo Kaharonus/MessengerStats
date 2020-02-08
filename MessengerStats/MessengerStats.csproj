@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="Resources\Images\facebook.png" />
+    <None Remove="Resources\Images\load.png" />
     <None Remove="Resources\Other\Product-Sans-Regular.ttf" />
   </ItemGroup>
 
@@ -19,6 +20,7 @@
     <Resource Include="Resources\Images\facebook.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\load.png" />
     <Resource Include="Resources\Other\Product-Sans-Regular.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
