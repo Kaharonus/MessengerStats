@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MessengerStats {
@@ -12,19 +13,24 @@ namespace MessengerStats {
         /// Full conversation data. Filled with Load function
         /// </summary>
         public static List<Conversation> Conversations { get; set; } = new List<Conversation>();
+        public static string User { get; set; }
 
         static async Task ParseMessages(Ref<RawConversation> orig, Ref<Conversation> data, DateTime creationTime) {
             await Task.Run(() => {              
                 var firstOrLast = orig.Value.messages[0];
-                data.Value.LastMessage = new Message() { Time =  Helper.ConvertTimeStamp(firstOrLast.timestamp_ms), Content = firstOrLast.content.DecodeString(), Sender = firstOrLast.sender_name.DecodeString() };
+                data.Value.LastMessage = new Message(firstOrLast.sender_name.DecodeString(), Helper.ConvertTimeStamp(firstOrLast.timestamp_ms), firstOrLast.content.DecodeString(), firstOrLast.content.DecodeString());
+                
                 firstOrLast = orig.Value.messages[orig.Value.messages.Count-1];
-                data.Value.FirstMessage = new Message() { Time = Helper.ConvertTimeStamp(firstOrLast.timestamp_ms), Content = firstOrLast.content.DecodeString(), Sender = firstOrLast.sender_name.DecodeString() };
+                data.Value.FirstMessage = new Message(firstOrLast.sender_name.DecodeString(), Helper.ConvertTimeStamp(firstOrLast.timestamp_ms), firstOrLast.content.DecodeString(), firstOrLast.content.DecodeString());
+                
                 data.Value.TotalMessages = orig.Value.messages.Count;
+               
                 foreach (var message in orig.Value.messages) {
                     Message m = new Message();
                     m.Content = message.content.DecodeString();
                     m.Sender = message.sender_name.DecodeString();
                     m.Time = Helper.ConvertTimeStamp(message.timestamp_ms);
+                    m.Type = message.type;
                     if (m.Time.AddDays(7) >= creationTime) {
                         data.Value.ActivityPerWeek++;
                     }
@@ -55,15 +61,35 @@ namespace MessengerStats {
         }
 
         /// <summary>
+        /// Assigns activity per week between 0-100 insted of 0-whatever
+        /// </summary>
+        private static void WeightActivity() {
+            var max = Conversations.Max(x => x.ActivityPerWeek);
+            for (int i = 0; i < Conversations.Count; i++) {
+                Conversations[i].ActivityPerWeek = Conversations[i].ActivityPerWeek * 100.0 / max;
+            }
+        }
+
+        /// <summary>
         /// Loads Messenger conversation from given path. Gives progress updates by second parameter
         /// </summary>
         /// <param name="path">Directory where facebook data is stored (xx/facebook-xxx/messages/inbox)</param>
         /// <param name="conversationChange">if specified gets fired every time there is a progress update</param>
         public static async Task Load(string path, EventHandler conversationChange = null) {
+            Dictionary<string, int> count = new Dictionary<string, int>();
             var dirs = Directory.GetDirectories(path);
             foreach (var dir in dirs) {
-                 Conversations.Add(await ParseConversation(dir, conversationChange));
+                var conv = await ParseConversation(dir, conversationChange);
+                foreach (var item in conv.Messages.Keys) {
+                    if (!count.ContainsKey(item)) {
+                        count.Add(item, 0);
+                    }
+                    count[item]++;
+                }
+                 Conversations.Add(conv);
             }
+            WeightActivity();
+            User = count.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
         }
 
         public class RawConversation {

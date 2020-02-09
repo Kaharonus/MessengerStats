@@ -36,11 +36,15 @@ namespace MessengerStats.Views {
             await ConversationData.Load(Path, (s,ev) => {
                 ParseName.Text = "Parsing conversation: " + s;
             });
+            Conversation.GenerateOverall();
             Navigation.FadeOut(LoadingCover, () => { 
                 ((Grid)LoadingCover.Parent).Children.Remove(LoadingCover);
             });
             foreach (var item in ConversationData.Conversations) {
                 ConversationItem i = new ConversationItem(item.Name);
+                i.MouseLeftButtonUp += (s, ev) => {
+                    CurrentPersonName.Text = item.Name;
+                };
                 searchPatterns.Add(item.Name.ToLower());
                 ConversationStackPanel.Children.Add(i);
             }
@@ -51,6 +55,7 @@ namespace MessengerStats.Views {
         }
 
         private void SearchText_TextChanged(object sender, TextChangedEventArgs e) {
+            //TODO: Optimize. This is shit and i know it.
             if (SearchText.Text.Length == 0) {
                 foreach (ConversationItem item in ConversationStackPanel.Children) {
                     item.Visibility = Visibility.Visible;
