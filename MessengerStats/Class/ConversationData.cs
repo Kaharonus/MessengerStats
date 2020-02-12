@@ -17,12 +17,7 @@ namespace MessengerStats {
 
         static async Task ParseMessages(Ref<RawConversation> orig, Ref<Conversation> data, DateTime creationTime) {
             await Task.Run(() => {              
-                var firstOrLast = orig.Value.messages[0];
-                data.Value.LastMessage = new Message(firstOrLast.sender_name.DecodeString(), Helper.ConvertTimeStamp(firstOrLast.timestamp_ms), firstOrLast.content.DecodeString(), firstOrLast.content.DecodeString());
-                
-                firstOrLast = orig.Value.messages[orig.Value.messages.Count-1];
-                data.Value.FirstMessage = new Message(firstOrLast.sender_name.DecodeString(), Helper.ConvertTimeStamp(firstOrLast.timestamp_ms), firstOrLast.content.DecodeString(), firstOrLast.content.DecodeString());
-                
+              
                 data.Value.TotalMessages = orig.Value.messages.Count;
                
                 foreach (var message in orig.Value.messages) {
@@ -57,6 +52,13 @@ namespace MessengerStats {
                 }
                 await ParseMessages(parsed, conv, time);
             }
+            var concat = conv.Value.Messages.Values.ToList().SelectMany(x => x);
+            var firstOrLast = concat.Max(x => x.Time);
+            conv.Value.LastMessage = concat.First(x => x.Time == firstOrLast);
+
+            firstOrLast = concat.Min(x => x.Time);
+            conv.Value.FirstMessage = concat.First(x => x.Time == firstOrLast);
+
             return conv.Value;
         }
 

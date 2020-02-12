@@ -36,14 +36,18 @@ namespace MessengerStats.Views {
             await ConversationData.Load(Path, (s,ev) => {
                 ParseName.Text = "Parsing conversation: " + s;
             });
-            Conversation.GenerateOverall();
+            GraphGrid.Children.Add(new GraphView(Conversation.GenerateOverall()));
             Navigation.FadeOut(LoadingCover, () => { 
                 ((Grid)LoadingCover.Parent).Children.Remove(LoadingCover);
             });
+
             foreach (var item in ConversationData.Conversations) {
                 ConversationItem i = new ConversationItem(item.Name);
                 i.MouseLeftButtonUp += (s, ev) => {
+                    GraphGrid.Children.Clear();
                     CurrentPersonName.Text = item.Name;
+                    GraphGrid.Children.Add(new GraphView(item.GenerateData()));
+
                 };
                 searchPatterns.Add(item.Name.ToLower());
                 ConversationStackPanel.Children.Add(i);

@@ -14,6 +14,11 @@ namespace MessengerStats {
             dtDateTime = dtDateTime.AddMilliseconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
         }
+
+        public static System.Drawing.Color ConvertColor(System.Windows.Media.SolidColorBrush brush) {
+            return System.Drawing.Color.FromArgb(brush.Color.A, brush.Color.R, brush.Color.G, brush.Color.B);
+        }
+
     }
     static class Extensions {
         /// <summary>

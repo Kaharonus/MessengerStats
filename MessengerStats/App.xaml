@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="/MessengerStats;component/Resources/Styles/Button.xaml" />
                 <ResourceDictionary Source="/MessengerStats;component/Resources/Styles/TextBlock.xaml" />
                 <ResourceDictionary Source="/MessengerStats;component/Resources/Other/Animations.xaml" />
+                <ResourceDictionary Source="/MessengerStats;component/Resources/Styles/ComboBox.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
             <FontFamily x:Key="ProductSans">pack://MessengerStats:,,,/Resources/Other/#Product Sans</FontFamily>
