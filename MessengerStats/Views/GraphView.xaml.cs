@@ -30,34 +30,48 @@ namespace MessengerStats.Views {
             Data = data;
         }
 
+
+        public void RenderGraph(GraphData item) {
+            PlotPanel.Children.Clear();
+            WpfPlot plot = new WpfPlot();
+            PlotPanel.Children.Add(plot);
+            foreach (var signal in item.Data) {
+                if (signal.Value.Length == 0) {
+                    continue;
+                }
+                if (item.StartDate != null) {
+                    plot.plt.PlotSignal(Array.ConvertAll(signal.Value, x => (double)x), item.Padding, label: signal.Key, markerSize: 0, xOffset: item.StartDate.ToOADate());
+                } else {
+                    plot.plt.PlotSignal(Array.ConvertAll(signal.Value, x => (double)x), item.Padding, label: signal.Key, markerSize: 0);
+
+                }
+            }
+            plot.plt.Ticks(dateTimeX: true);
+            plot.plt.Legend(true, location: legendLocation.upperLeft);
+            plot.plt.XLabel(item.XAxisLabel, enable: true);
+            plot.plt.YLabel(item.YAxisLabel, enable: true);
+            plot.plt.Style(
+                Helper.ConvertColor(brush: (SolidColorBrush)FindResource("BackgroundDark")),
+                Helper.ConvertColor((SolidColorBrush)FindResource("Background")),
+                ColorTranslator.FromHtml("#888"),
+                Helper.ConvertColor((SolidColorBrush)FindResource("TextColor")),
+                Helper.ConvertColor((SolidColorBrush)FindResource("TextColor")),
+                Helper.ConvertColor((SolidColorBrush)FindResource("TextColor"))
+                );
+            plot.Render();
+        }
+
         private void Grid_Loaded(object sender, RoutedEventArgs e) {
             foreach (var item in Data) {
-                WpfPlot plot = new WpfPlot();
-                PlotPanel.Children.Add(plot);
-                foreach (var signal in item.Data) {
-                    if (signal.Value.Length == 0) {
-                        continue;
-                    }
-                    if (item.StartDate != null) {
-                        plot.plt.PlotSignal(Array.ConvertAll(signal.Value, x => (double)x), item.Padding, label: signal.Key, markerSize: 0, xOffset: item.StartDate.ToOADate());
-                    } else {
-                        plot.plt.PlotSignal(Array.ConvertAll(signal.Value, x => (double)x), item.Padding, label: signal.Key, markerSize: 0);
-
-                    }
-                }
-                plot.plt.Ticks(dateTimeX: true);
-                plot.plt.Legend(true, location: legendLocation.upperLeft);
-                plot.plt.XLabel(item.XAxisLabel, enable: true);
-                plot.plt.YLabel(item.YAxisLabel, enable: true);
-                plot.plt.Style(
-                    Helper.ConvertColor((SolidColorBrush)FindResource("BackgroundDark")), 
-                    Helper.ConvertColor((SolidColorBrush)FindResource("Background")),
-                    ColorTranslator.FromHtml("#888"),
-                    Helper.ConvertColor((SolidColorBrush)FindResource("TextColor")),
-                    Helper.ConvertColor((SolidColorBrush)FindResource("TextColor")),
-                    Helper.ConvertColor((SolidColorBrush)FindResource("TextColor"))
-                    );
-                plot.Render();
+                ComboBoxItem boxItem = new ComboBoxItem();
+                boxItem.Content = item.Name;
+                GraphsSelect.Items.Add(boxItem);
+            }
+            GraphsSelect.SelectionChanged += (s, ev) => {
+                RenderGraph(Data[GraphsSelect.SelectedIndex]);
+            };
+            if (Data.Count > 0) {
+                GraphsSelect.SelectedIndex = 0;
             }
         }
     }

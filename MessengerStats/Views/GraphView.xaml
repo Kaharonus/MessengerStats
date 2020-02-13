@@ -9,11 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Loaded="Grid_Loaded">
         <Grid Height="40" VerticalAlignment="Top" Background="{StaticResource BackgroundDark}">
-            <ComboBox Style="{DynamicResource StyledComboBox}"  Width="150" HorizontalAlignment="Right" Margin="0,0,15,0" Height="30" >
-                <ComboBoxItem Content="Test" />
-                <ComboBoxItem Content="Test2" />
-                <ComboBoxItem Content="Test3" />
-                <ComboBoxItem Content="Test4" />
+            <ComboBox x:Name="GraphsSelect" Style="{DynamicResource StyledComboBox}"  Width="150" HorizontalAlignment="Right" Margin="0,0,15,0" Height="30" >
 
             </ComboBox>
         </Grid>
