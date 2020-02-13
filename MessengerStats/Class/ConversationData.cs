@@ -72,6 +72,15 @@ namespace MessengerStats {
             }
         }
 
+        public static float[] WeightData(float[] arr) {
+            var newarr = new float[arr.Length];
+            var max = arr.Max(x => x);
+            for (int i = 0; i < arr.Length; i++) {
+                newarr[i] = arr[i] * 100.0f / max;
+            }
+            return newarr;
+        }
+
         /// <summary>
         /// Loads Messenger conversation from given path. Gives progress updates by second parameter
         /// </summary>

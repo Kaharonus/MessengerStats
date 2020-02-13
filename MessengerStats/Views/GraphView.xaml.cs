@@ -36,13 +36,13 @@ namespace MessengerStats.Views {
             WpfPlot plot = new WpfPlot();
             PlotPanel.Children.Add(plot);
             foreach (var signal in item.Data) {
-                if (signal.Value.Length == 0) {
+                if (signal.Value.y.Length == 0) {
                     continue;
                 }
                 if (item.StartDate != null) {
-                    plot.plt.PlotSignal(Array.ConvertAll(signal.Value, x => (double)x), item.Padding, label: signal.Key, markerSize: 0, xOffset: item.StartDate.ToOADate());
+                    plot.plt.PlotScatter(Array.ConvertAll(signal.Value.x, x => (double)x), Array.ConvertAll(signal.Value.y, x => (double)x), label: signal.Key, markerSize: 0);
                 } else {
-                    plot.plt.PlotSignal(Array.ConvertAll(signal.Value, x => (double)x), item.Padding, label: signal.Key, markerSize: 0);
+                    plot.plt.PlotScatter(Array.ConvertAll(signal.Value.x, x => (double)x), Array.ConvertAll(signal.Value.y, x => (double)x), label: signal.Key, markerSize: 0);
 
                 }
             }

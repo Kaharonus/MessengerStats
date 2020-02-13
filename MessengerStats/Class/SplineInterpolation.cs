@@ -228,36 +228,21 @@ namespace MessengerStats {
         /// <param name="xs">Output (interpolated) x values.</param>
         /// <param name="ys">Output (interpolated) y values.</param>
         public static void FitParametric(float[] x, float[] y, int nOutputPoints, out float[] xs, out float[] ys) {
-            // Compute distances
-            int n = x.Length;
-            float[] dists = new float[n]; // cumulative distance
-            dists[0] = 0;
-            float totalDist = 0;
+            if (x.Length  ==  0) {
+                ys = null;
+                xs = null;
+                return;
+            }
+            int n = nOutputPoints;
+            xs = new float[n];
+            float stepSize = (x[x.Length - 1] - x[0]) / (n - 1);
 
-            for (int i = 1; i < n; i++) {
-                float dx = x[i] - x[i - 1];
-                float dy = y[i] - y[i - 1];
-                float dist = (float)Math.Sqrt(dx * dx + dy * dy);
-                totalDist += dist;
-                dists[i] = totalDist;
+            for (int i = 0; i < n; i++) {
+                xs[i] = x[0] + i * stepSize;
             }
 
-            // Create 'times' to interpolate to
-            float dt = totalDist / (nOutputPoints - 1);
-            float[] times = new float[nOutputPoints];
-            times[0] = 0;
+            ys = Compute(x, y, xs);
 
-            for (int i = 1; i < nOutputPoints; i++) {
-                times[i] = times[i - 1] + dt;
-            }
-
-
-            // Spline fit both x and y to times
-            CubicSpline xSpline = new CubicSpline();
-            xs = xSpline.FitAndEval(dists, x, times);
-
-            CubicSpline ySpline = new CubicSpline();
-            ys = ySpline.FitAndEval(dists, y, times);
         }
     }
 }
