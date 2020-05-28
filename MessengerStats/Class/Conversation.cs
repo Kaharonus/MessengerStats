@@ -16,26 +16,25 @@ namespace MessengerStats {
         public Dictionary<string, List<Message>> Messages = new Dictionary<string, List<Message>>();
 
         private GraphData GroupDaily(GraphData data) {
-            var newData = new GraphData() {
+            var newData = new GraphData {
                 EndDate = data.EndDate,
                 StartDate = data.StartDate,
                 Padding = 10,
                 XAxisLabel = data.XAxisLabel,
                 YAxisLabel = data.YAxisLabel,
-
+                Name = "Grouped daily",
             };
-            newData.Name = "Grouped daily";
-            foreach (var item in data.Data) {
-                var x = new float[item.Value.x.Length];
-                var y = new float[item.Value.x.Length];
+            foreach (var (key, value) in data.Data) {
+                var x = new float[value.x.Length];
+                var y = new float[value.x.Length];
                 float count = 0;
                 for (int i = 0; i < y.Length; i++) {
                     x[i] = i;
-                    count += item.Value.y[i];
+                    count += value.y[i];
                     y[i] = count;
                 }
-                CubicSpline.FitParametric(x, y, item.Value.x.Length * 5, out var xS, out var yS);
-                newData.Data.Add(item.Key, (xS, RemoveSmallerValues(yS)));
+                CubicSpline.FitParametric(x, y, value.x.Length * 5, out var xS, out var yS);
+                newData.Data.Add(key, (xS, RemoveSmallerValues(yS)));
 
             }
             return newData;
@@ -84,7 +83,7 @@ namespace MessengerStats {
             data.StartDate = FirstMessage.Time;
             data.EndDate = LastMessage.Time;
             data.Name = "Daily data";
-            var count = (int)(data.EndDate - data.StartDate).TotalDays;
+            var count = (int)(data.EndDate - data.StartDate.GetValueOrDefault()).TotalDays;
             var arr = new float[count];
             for (int i = 0; i < arr.Count(); i++) {
                 arr[i] = i;
@@ -94,10 +93,10 @@ namespace MessengerStats {
                 var result = new float[count];
                 for (int i = 0; i < count; i++) {
 
-                    if (!days.ContainsKey(data.StartDate.Date.AddDays(i))) {
+                    if (!days.ContainsKey(data.StartDate.GetValueOrDefault().Date.AddDays(i))) {
                         result[i] = 0;
                     } else {
-                        result[i] = days[data.StartDate.Date.AddDays(i)].Count;
+                        result[i] = days[data.StartDate.GetValueOrDefault().Date.AddDays(i)].Count;
                     }
                 }
                 data.Data.Add(person.Key, (arr, result));
@@ -107,8 +106,7 @@ namespace MessengerStats {
 
         private GraphData GenerateHourly() {
             var data = new GraphData();
-            data.StartDate = FirstMessage.Time;
-            data.EndDate = LastMessage.Time;
+            data.StartDate = null;
             data.Name = "Activity";
             var hours = new float[24];
             for (int i = 0; i < 24; i++) {
@@ -141,12 +139,9 @@ namespace MessengerStats {
         }
 
 
-
-        public static List<GraphData> GenerateOverall() {
-            var graphs = new List<GraphData>();
-            var orderedData = ConversationData.Conversations.Select(x => x.Messages.ContainsKey(ConversationData.User) ? x.Messages[ConversationData.User] : null).Where(x => x != null).SelectMany(x => x).OrderBy(x => x.Time);
+        private static GraphData GenerateOverallHourly(ref List<Message> data) {
             //var daily = orderedData.GroupBy(x => x.Time.Date).ToList();
-            var hourly = orderedData.GroupBy(x => x.Time.Hour).OrderBy(x => x.Key).ToList();
+            var hourly = data.GroupBy(x => x.Time.Hour).OrderBy(x => x.Key).ToList();
             var hours = new float[24];
             var hourlyCount = new float[24];
             for (int i = 0; i < 24; i++) {
@@ -160,7 +155,61 @@ namespace MessengerStats {
             dataHourly.Name = "Hourly data";
             dataHourly.YAxisLabel = "Value";
             dataHourly.XAxisLabel = "Hours";
-            graphs.Add(dataHourly);
+            return dataHourly;
+        }
+
+        private static GraphData GenerateOverallMessages(ref List<Message> data) {
+            var graph = new GraphData {
+                Name = "Daily count",
+                XAxisLabel = "Date",
+                YAxisLabel = "Count",
+                Padding = 0,
+                StartDate = data[0].Time,
+                EndDate = data[^1].Time
+            };
+            var xValues = new List<float>();
+            var yValues = new List<float>();
+            var grouped = data.GroupBy(x => x.Time.Date).OrderBy(x=>x.Key);
+            var counter = 0;
+            foreach (var value in grouped) {
+                xValues.Add(counter);
+                yValues.Add(value.Count());
+                counter++;
+            }
+            graph.Data.Add("",(xValues.ToArray(), yValues.ToArray()));
+            return graph;
+        }
+        
+        private static GraphData GenerateOverallMessagesCount(ref List<Message> data) {
+            var graph = new GraphData {
+                Name = "Overall count",
+                XAxisLabel = "Date",
+                YAxisLabel = "Count",
+                Padding = 0,
+                StartDate = data[0].Time,
+                EndDate = data[^1].Time
+            };
+            var xValues = new List<float>();
+            var yValues = new List<float>();
+            var grouped = data.GroupBy(x => x.Time.Date).OrderBy(x=>x.Key);
+            var counter = 0;
+            var currValue = 0;
+            foreach (var value in grouped) {
+                xValues.Add(counter);
+                currValue += value.Count();
+                yValues.Add(currValue);
+                counter++;
+            }
+            graph.Data.Add("",(xValues.ToArray(), yValues.ToArray()));
+            return graph;
+        }
+
+        public static List<GraphData> GenerateOverall() {
+            var graphs = new List<GraphData>();
+            var orderedData = ConversationData.Conversations.Select(x => x.Messages.ContainsKey(ConversationData.User) ? x.Messages[ConversationData.User] : null).Where(x => x != null).SelectMany(x => x).OrderBy(x => x.Time).ToList();
+            graphs.Add(GenerateOverallHourly(ref orderedData));
+            graphs.Add(GenerateOverallMessages(ref orderedData));
+            graphs.Add(GenerateOverallMessagesCount(ref orderedData));
             return graphs;
         }
 

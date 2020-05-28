@@ -40,17 +40,16 @@ namespace MessengerStats.Views {
             Navigation.FadeOut(LoadingCover, () => { 
                 ((Grid)LoadingCover.Parent).Children.Remove(LoadingCover);
             });
-
             foreach (var item in ConversationData.Conversations) {
-                ConversationItem i = new ConversationItem(item.Name);
+                var i = new ConversationItem(item.Name);
                 i.MouseLeftButtonUp += (s, ev) => {
                     GraphGrid.Children.Clear();
                     CurrentPersonName.Text = item.Name;
                     GraphGrid.Children.Add(new GraphView(item.GenerateData()));
 
                 };
-                searchPatterns.Add(item.Name.ToLower());
                 ConversationStackPanel.Children.Add(i);
+                searchPatterns.Add(item.Name.ToLower());
             }
         }
 
@@ -73,6 +72,12 @@ namespace MessengerStats.Views {
             foreach (var item in searchPatterns.Where(x => x.Contains(search))) {
                 ConversationStackPanel.Children[searchPatterns.IndexOf(item)].Visibility = Visibility.Visible;
             }
+        }
+
+        private void OverallStats_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+            GraphGrid.Children.Clear();
+            CurrentPersonName.Text = "Overall stats";
+            GraphGrid.Children.Add(new GraphView(Conversation.GenerateOverall()));
         }
     }
 }

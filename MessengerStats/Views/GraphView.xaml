@@ -7,13 +7,13 @@
              xmlns:ScottPlot="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Loaded="Grid_Loaded">
+    <Grid Loaded="Grid_Loaded" Background="{StaticResource BackgroundDark}">
         <Grid Height="40" VerticalAlignment="Top" Background="{StaticResource BackgroundDark}">
             <ComboBox x:Name="GraphsSelect" Style="{DynamicResource StyledComboBox}"  Width="150" HorizontalAlignment="Right" Margin="0,0,15,0" Height="30" >
 
             </ComboBox>
         </Grid>
-        <Grid x:Name="PlotPanel" Margin="0,40,0,0" />
+        <Grid x:Name="PlotPanel" Margin="0,40,0,10" />
 
     </Grid>
 </UserControl>

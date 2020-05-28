@@ -40,13 +40,15 @@ namespace MessengerStats.Views {
                     continue;
                 }
                 if (item.StartDate != null) {
-                    plot.plt.PlotScatter(Array.ConvertAll(signal.Value.x, x => (double)x), Array.ConvertAll(signal.Value.y, x => (double)x), label: signal.Key, markerSize: 0);
+                    plot.plt.PlotScatter(Array.ConvertAll(signal.Value.x, x => x + item.StartDate.GetValueOrDefault().ToOADate()), Array.ConvertAll(signal.Value.y, x => (double)x), label: signal.Key, markerSize: 0);
                 } else {
                     plot.plt.PlotScatter(Array.ConvertAll(signal.Value.x, x => (double)x), Array.ConvertAll(signal.Value.y, x => (double)x), label: signal.Key, markerSize: 0);
 
                 }
             }
-            plot.plt.Ticks(dateTimeX: true);
+            if (item.StartDate != null) {
+                plot.plt.Ticks(dateTimeX: true);
+            }
             plot.plt.Legend(true, location: legendLocation.upperLeft);
             plot.plt.XLabel(item.XAxisLabel, enable: true);
             plot.plt.YLabel(item.YAxisLabel, enable: true);

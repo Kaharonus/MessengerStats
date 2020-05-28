@@ -12,7 +12,7 @@
                 <RotateTransform Angle="1"/>
             </Image.RenderTransform>
             <Image.Triggers>
-                <EventTrigger RoutedEvent="Loaded">
+                <EventTrigger RoutedEvent="Image.Loaded">
                     <BeginStoryboard>
                         <Storyboard>
                             <DoubleAnimation

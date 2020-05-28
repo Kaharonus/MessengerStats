@@ -31,7 +31,7 @@ namespace MessengerStats {
                 return "";
             }
             try {
-                Encoding targetEncoding = Encoding.GetEncoding("ISO-8859-1");
+                var targetEncoding = Encoding.GetEncoding("ISO-8859-1");
                 var unescapeText = System.Text.RegularExpressions.Regex.Unescape(text);
                 var res = Encoding.UTF8.GetString(targetEncoding.GetBytes(unescapeText));
                 return res;
